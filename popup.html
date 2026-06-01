@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>WebMemo</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 360px;
+      min-height: 200px;
+      font-family: "Segoe UI", "Yu Gothic", sans-serif;
+      font-size: 13px;
+      background: #1e1e2e;
+      color: #cdd6f4;
+    }
+    .header {
+      background: #313244;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #45475a;
+    }
+    .header-icon { font-size: 18px; }
+    .header-title { font-size: 14px; font-weight: 600; color: #cba6f7; }
+    .page-info {
+      padding: 10px 14px;
+      background: #181825;
+      border-bottom: 1px solid #313244;
+    }
+    .page-url {
+      font-size: 11px;
+      color: #6c7086;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .page-title {
+      font-size: 12px;
+      color: #a6adc8;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .body { padding: 12px 14px; }
+    label {
+      display: block;
+      font-size: 11px;
+      color: #6c7086;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      background: #313244;
+      border: 1px solid #45475a;
+      border-radius: 6px;
+      color: #cdd6f4;
+      font-size: 13px;
+      padding: 8px 10px;
+      resize: vertical;
+      outline: none;
+      font-family: inherit;
+      line-height: 1.5;
+    }
+    textarea:focus { border-color: #cba6f7; }
+    .tags-row {
+      margin-top: 10px;
+    }
+    .tags-input {
+      width: 100%;
+      background: #313244;
+      border: 1px solid #45475a;
+      border-radius: 6px;
+      color: #cdd6f4;
+      font-size: 13px;
+      padding: 6px 10px;
+      outline: none;
+      font-family: inherit;
+    }
+    .tags-input:focus { border-color: #89b4fa; }
+    .tags-hint { font-size: 10px; color: #45475a; margin-top: 3px; }
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    button {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      transition: opacity 0.15s;
+    }
+    button:hover { opacity: 0.85; }
+    #saveBtn { background: #cba6f7; color: #1e1e2e; }
+    #deleteBtn { background: #313244; color: #f38ba8; border: 1px solid #45475a; }
+    #managerBtn {
+      width: 100%;
+      background: #313244;
+      color: #89b4fa;
+      border: 1px solid #45475a;
+      margin-top: 8px;
+      flex: none;
+    }
+    .status {
+      text-align: center;
+      font-size: 11px;
+      color: #a6e3a1;
+      min-height: 16px;
+      margin-top: 6px;
+    }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .toggle-label { font-size: 12px; color: #a6adc8; }
+    .toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: #45475a;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 14px; height: 14px;
+      left: 3px; top: 3px;
+      background: #cdd6f4;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    input:checked + .slider { background: #cba6f7; }
+    input:checked + .slider::before { transform: translateX(16px); }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="header-icon">📝</span>
+    <span class="header-title">WebMemo</span>
+  </div>
+  <div class="page-info">
+    <div class="page-url" id="pageUrl">読み込み中...</div>
+    <div class="page-title" id="pageTitle"></div>
+  </div>
+  <div class="body">
+    <label>メモ</label>
+    <textarea id="memoText" placeholder="このページへのメモを入力..."></textarea>
+    <div class="tags-row">
+      <label>タグ</label>
+      <input type="text" class="tags-input" id="tagsInput" placeholder="タグをカンマ区切りで入力（例: 仕事, 参考）">
+      <div class="tags-hint">複数タグはカンマ区切り</div>
+    </div>
+    <div class="toggle-row">
+      <label class="toggle">
+        <input type="checkbox" id="overlayToggle">
+        <span class="slider"></span>
+      </label>
+      <span class="toggle-label">画面上にメモを常時表示</span>
+    </div>
+    <div class="actions">
+      <button id="saveBtn">保存</button>
+      <button id="deleteBtn">削除</button>
+    </div>
+    <button id="managerBtn">📋 メモ一覧・検索</button>
+    <div class="status" id="status"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

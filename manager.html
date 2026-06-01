@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>WebMemo - メモ一覧</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", "Yu Gothic", sans-serif;
+      font-size: 14px;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      min-height: 100vh;
+    }
+    .topbar {
+      background: #313244;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #45475a;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .topbar-title { font-size: 18px; font-weight: 700; color: #cba6f7; }
+    .topbar-count { font-size: 12px; color: #6c7086; margin-left: auto; }
+    .controls {
+      padding: 16px 24px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: #181825;
+      border-bottom: 1px solid #313244;
+    }
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      background: #313244;
+      border: 1px solid #45475a;
+      border-radius: 8px;
+      color: #cdd6f4;
+      font-size: 14px;
+      padding: 8px 12px;
+      outline: none;
+      font-family: inherit;
+    }
+    .search-box:focus { border-color: #cba6f7; }
+    .tag-filter {
+      background: #313244;
+      border: 1px solid #45475a;
+      border-radius: 8px;
+      color: #cdd6f4;
+      font-size: 14px;
+      padding: 8px 12px;
+      outline: none;
+      font-family: inherit;
+      min-width: 140px;
+      cursor: pointer;
+    }
+    .sort-select {
+      background: #313244;
+      border: 1px solid #45475a;
+      border-radius: 8px;
+      color: #cdd6f4;
+      font-size: 14px;
+      padding: 8px 12px;
+      outline: none;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .main { padding: 20px 24px; }
+    .empty {
+      text-align: center;
+      color: #6c7086;
+      padding: 60px 0;
+      font-size: 16px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: #313244;
+      border: 1px solid #45475a;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .card:hover { border-color: #cba6f7; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+    .card-header {
+      padding: 10px 14px;
+      background: #45475a;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #cdd6f4;
+      flex: 1;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    .card-url {
+      font-size: 11px;
+      color: #89b4fa;
+      padding: 4px 14px 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+    }
+    .card-url:hover { text-decoration: underline; }
+    .card-body {
+      padding: 10px 14px;
+      color: #a6adc8;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 120px;
+      overflow: hidden;
+      position: relative;
+    }
+    .card-body.expanded { max-height: none; }
+    .card-fade {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 30px;
+      background: linear-gradient(transparent, #313244);
+      pointer-events: none;
+    }
+    .card-footer {
+      padding: 8px 14px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      background: #1e1e2e;
+      border: 1px solid #45475a;
+      border-radius: 12px;
+      padding: 2px 10px;
+      font-size: 11px;
+      color: #89b4fa;
+      cursor: pointer;
+    }
+    .tag:hover { border-color: #89b4fa; }
+    .card-date {
+      font-size: 11px;
+      color: #6c7086;
+      margin-left: auto;
+    }
+    .card-actions {
+      display: flex;
+      gap: 4px;
+      padding: 0 14px 10px;
+    }
+    .btn-sm {
+      padding: 4px 10px;
+      border: 1px solid #45475a;
+      border-radius: 6px;
+      background: #1e1e2e;
+      color: #a6adc8;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-sm:hover { border-color: #cba6f7; color: #cba6f7; }
+    .btn-del:hover { border-color: #f38ba8; color: #f38ba8; }
+    .expand-btn {
+      font-size: 11px;
+      color: #6c7086;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0 14px 6px;
+      display: block;
+      font-family: inherit;
+    }
+    .expand-btn:hover { color: #cba6f7; }
+    .tag-section {
+      padding: 16px 24px 0;
+    }
+    .tag-section-title {
+      font-size: 11px;
+      color: #6c7086;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .all-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .all-tags .tag { font-size: 12px; padding: 4px 12px; }
+    .tag.active { background: #cba6f7; color: #1e1e2e; border-color: #cba6f7; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <span style="font-size:20px">📝</span>
+    <span class="topbar-title">WebMemo 一覧</span>
+    <span class="topbar-count" id="count"></span>
+  </div>
+  <div class="controls">
+    <input type="text" class="search-box" id="searchInput" placeholder="🔍 URL・タイトル・メモ内容で検索...">
+    <select class="sort-select" id="sortSelect">
+      <option value="newest">新しい順</option>
+      <option value="oldest">古い順</option>
+      <option value="title">タイトル順</option>
+    </select>
+  </div>
+  <div class="tag-section">
+    <div class="tag-section-title">タグで絞り込み</div>
+    <div class="all-tags" id="allTags"></div>
+  </div>
+  <div class="main">
+    <div id="grid" class="grid"></div>
+    <div id="empty" class="empty" style="display:none">メモがありません</div>
+  </div>
+  <script src="manager.js"></script>
+</body>
+</html>

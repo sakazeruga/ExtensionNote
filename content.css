@@ -1,0 +1,74 @@
+#webmemo-overlay {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 2147483647;
+  width: 280px;
+  max-width: calc(100vw - 32px);
+  background: #1e1e2e;
+  border: 1px solid #45475a;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  font-family: "Segoe UI", "Yu Gothic", sans-serif;
+  font-size: 13px;
+  color: #cdd6f4;
+  overflow: hidden;
+  user-select: none;
+}
+
+#webmemo-overlay .wm-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: #313244;
+  border-bottom: 1px solid #45475a;
+  cursor: move;
+}
+
+#webmemo-overlay .wm-icon { font-size: 14px; }
+
+#webmemo-overlay .wm-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #cba6f7;
+  flex: 1;
+}
+
+#webmemo-overlay .wm-close {
+  background: none;
+  border: none;
+  color: #6c7086;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 2px;
+  font-family: inherit;
+}
+#webmemo-overlay .wm-close:hover { color: #f38ba8; }
+
+#webmemo-overlay .wm-body {
+  padding: 10px 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+  user-select: text;
+}
+
+#webmemo-overlay .wm-tags {
+  padding: 6px 12px 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+#webmemo-overlay .wm-tag {
+  background: #313244;
+  border: 1px solid #45475a;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 11px;
+  color: #89b4fa;
+}
