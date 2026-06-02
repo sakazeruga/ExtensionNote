@@ -1,9 +1,24 @@
 // このページのlocalStorageがメモの保存場所（メモURL = chrome-extension://<id>/offscreen.html）
 
+// 除去するトラッキング系パラメータ
+const TRACKING_PARAMS = new Set([
+  "utm_source","utm_medium","utm_campaign","utm_term","utm_content","utm_id",
+  "fbclid","gclid","msclkid","twclid","dclid","yclid",
+  "_ga","_gl","mc_cid","mc_eid",
+  "ref","referrer","source","from","via"
+]);
+
 function normalizeUrl(url) {
   try {
     const u = new URL(url);
-    return u.origin + u.pathname;
+    // トラッキングパラメータを除去し、残りをキー順にソート
+    const params = [...u.searchParams.entries()]
+      .filter(([k]) => !TRACKING_PARAMS.has(k))
+      .sort(([a], [b]) => a.localeCompare(b));
+    const search = params.length
+      ? "?" + params.map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join("&")
+      : "";
+    return u.origin + u.pathname + search;
   } catch {
     return url;
   }
