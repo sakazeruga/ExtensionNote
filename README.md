@@ -3,6 +3,10 @@
 Webページにメモを貼れるChrome拡張機能です。
 
 ---
+##Updates
+Youtube等の属性に対応
+---
+
 
 ## なんで唐突にこんなの作ったの？
 GmailのSimpleNoteを普段使ってるんですが、
